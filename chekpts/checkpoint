@@ -1,0 +1,2 @@
+model_checkpoint_path: "RNN_LST_model_subject_num_25_final.ckpt"
+all_model_checkpoint_paths: "RNN_LST_model_subject_num_25_final.ckpt"
