@@ -39,11 +39,10 @@ for n=1:n_subjects
 
  	result = modelfit_pt_RKN([placdata(n).behavedata([3:stop/3+2, 2*stop/3+2:stop,1+ stop + stop/3: 1+stop + 2*stop/3],:) ; dopadata(n).behavedata([3:stop/3+2, 2*stop/3+2:stop,1+ stop + stop/3: 1+stop + 2*stop/3],:)],150);
 
+ 	end_chunk = 6; start_chunk = 1; chunk_size= end_chunk-start_chunk + 1;
+	out = repmat([start_chunk:end_chunk],30,1) +  repmat([0:10:290]',1,chunk_size); out = reshape(out',numel(out),1);
 
-
-
-
-
+ 	result = modelfit_pt_RKN([placdata(n).behavedata(out+2,:); dopadata(n).behavedata(out+2,:)]);
 
 	% cd("C:\Users\ritwik7\Dropbox\Postdoc_UCL\DATA\rlab_incomplete_rewardSWB_code\by_RN\")
 
@@ -54,8 +53,11 @@ for n=1:n_subjects
 
 	% dirpath = (strcat(['placdata\subject_num_',num2str(placdata(n).subjectnumber)]));
 
-	dirpath = (strcat(['ActualDataFitting\Pretraining\vcheck\subject_num_',num2str(placdata(n).subjectnumber)]));
+	%% ####### Blocking
+	% dirpath = (strcat(['ActualDataFitting\Pretraining\vcheck\subject_num_',num2str(placdata(n).subjectnumber)]));
 
+	%%% ####### Chunking 
+	dirpath = (strcat(['ActualDataFitting\Pretraining\v6chunks\subject_num_',num2str(placdata(n).subjectnumber)]));
 
 	cd(dirpath)
 	% save PT_result result
@@ -76,7 +78,11 @@ for n=28:41
 
 	dirpath = (strcat(['placdata/subject_num_',num2str(n),'/']));
 
-	dirpath = (strcat(['ActualDataFitting/Pretraining/vcheck/subject_num_',num2str(n),'/']));
+	%%%%%% Blocking
+	% dirpath = (strcat(['ActualDataFitting/Pretraining/vcheck/subject_num_',num2str(n),'/']));
+	
+	%%%% Chunking
+	dirpath = (strcat(['ActualDataFitting/Pretraining/v6chunks/subject_num_',num2str(n),'/']));
 
 
 	cd(dirpath)
@@ -107,17 +113,24 @@ for n=28:41
 
 	% test_data.behavedata = [placdata(find([placdata.subjectnumber] ==n)).behavedata(stop+3:stop+3+stop/2-1,:); dopadata(find([dopadata.subjectnumber] ==n)).behavedata(stop+3:stop+3+stop/2-1,:)];
 
-	test_data.behavedata = [placdata(find([placdata.subjectnumber] ==n)).behavedata([stop/3+2:stop/3+1+stop/6, stop+1:stop + stop/6 ,2+stop + 2*stop/3: 1+stop + 2*stop/3 + stop/6],:); dopadata(find([dopadata.subjectnumber] ==n)).behavedata([stop/3+2:stop/3+1+stop/6, stop+1:stop + stop/6 ,2+stop + 2*stop/3: 1+stop + 2*stop/3 + stop/6],:)];
+	%%%% ---blocking 
+	% test_data.behavedata = [placdata(find([placdata.subjectnumber] ==n)).behavedata([stop/3+2:stop/3+1+stop/6, stop+1:stop + stop/6 ,2+stop + 2*stop/3: 1+stop + 2*stop/3 + stop/6],:); dopadata(find([dopadata.subjectnumber] ==n)).behavedata([stop/3+2:stop/3+1+stop/6, stop+1:stop + stop/6 ,2+stop + 2*stop/3: 1+stop + 2*stop/3 + stop/6],:)];
 
+
+	%%%% --- chunking ----
+	end_chunk = 8; start_chunk = 7; chunk_size= end_chunk-start_chunk + 1;
+	out = repmat([start_chunk:end_chunk],30,1) +  repmat([0:10:290]',1,chunk_size); out = reshape(out',numel(out),1);
+
+	test_data.behavedata = [placdata(find([placdata.subjectnumber] ==n)).behavedata(out+2,:); dopadata(find([dopadata.subjectnumber] ==n)).behavedata(out+2,:)];
 
 
 	[loglike, utildiff, logodds, probchoice_test] = model_param_RKN(result.b,test_data);
 	
 	
 
-	PT_pseudoR2_test(n-10) = 1 + loglike/(log(0.5)*stop);
+	% PT_pseudoR2_test(n-10) = 1 + loglike/(log(0.5)*stop);
 
-	% PT_pseudoR2_test(n-10) = 1 + (-(sum((1-test_data.behavedata(:,7)).*log(1-probchoice_test)) + sum(test_data.behavedata(:,7).*log(probchoice_test)) ) / length(probchoice_test)/log(0.5)
+	PT_pseudoR2_test(n-10) = 1 + (-(sum((1-test_data.behavedata(:,7)).*log(1-probchoice_test)) + sum(test_data.behavedata(:,7).*log(probchoice_test)) ) / length(probchoice_test))/log(0.5)
 
 
 	% PT_pseudoR2_test(n-10) = 1 + loglike/(log(0.5)*75);
