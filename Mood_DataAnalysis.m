@@ -37,10 +37,16 @@ for n=1:n_subjects
 
 	% result = modelfit_pt_RKN([placdata(n).behavedata(stop+2:end,:) ; dopadata(n).behavedata(stop+2:end,:)],150);
 
- 	result = modelfit_pt_RKN([placdata(n).behavedata([3:stop/3+2, 2*stop/3+2:stop,1+ stop + stop/3: 1+stop + 2*stop/3],:) ; dopadata(n).behavedata([3:stop/3+2, 2*stop/3+2:stop,1+ stop + stop/3: 1+stop + 2*stop/3],:)],150);
+ 	% result = modelfit_pt_RKN([placdata(n).behavedata([3:stop/3+2, 2*stop/3+2:stop,1+ stop + stop/3: 1+stop + 2*stop/3],:) ; dopadata(n).behavedata([3:stop/3+2, 2*stop/3+2:stop,1+ stop + stop/3: 1+stop + 2*stop/3],:)],150);
 
- 	end_chunk = 6; start_chunk = 1; chunk_size= end_chunk-start_chunk + 1;
-	out = repmat([start_chunk:end_chunk],30,1) +  repmat([0:10:290]',1,chunk_size); out = reshape(out',numel(out),1);
+ 	%%%% Chunking 
+
+ % 	end_chunk = 6; start_chunk = 1; chunk_size= end_chunk-start_chunk + 1;
+	% out = repmat([start_chunk:end_chunk],30,1) +  repmat([0:10:290]',1,chunk_size); out = reshape(out',numel(out),1);
+
+	end_chunk = 10; start_chunk = 1; chunk_size= end_chunk-start_chunk + 1;
+	out = repmat([start_chunk:end_chunk],30/2,1) +  repmat([0:2*10:290]',1,chunk_size); out = reshape(out',numel(out),1);
+
 
  	result = modelfit_pt_RKN([placdata(n).behavedata(out+2,:); dopadata(n).behavedata(out+2,:)]);
 
@@ -57,7 +63,7 @@ for n=1:n_subjects
 	% dirpath = (strcat(['ActualDataFitting\Pretraining\vcheck\subject_num_',num2str(placdata(n).subjectnumber)]));
 
 	%%% ####### Chunking 
-	dirpath = (strcat(['ActualDataFitting\Pretraining\v6chunks\subject_num_',num2str(placdata(n).subjectnumber)]));
+	dirpath = (strcat(['ActualDataFitting\Pretraining\v10chunks\subject_num_',num2str(placdata(n).subjectnumber)]));
 
 	cd(dirpath)
 	% save PT_result result
@@ -82,7 +88,7 @@ for n=28:41
 	% dirpath = (strcat(['ActualDataFitting/Pretraining/vcheck/subject_num_',num2str(n),'/']));
 	
 	%%%% Chunking
-	dirpath = (strcat(['ActualDataFitting/Pretraining/v6chunks/subject_num_',num2str(n),'/']));
+	dirpath = (strcat(['ActualDataFitting/Pretraining/v10chunks/subject_num_',num2str(n),'/']));
 
 
 	cd(dirpath)
@@ -118,11 +124,18 @@ for n=28:41
 
 
 	%%%% --- chunking ----
-	end_chunk = 8; start_chunk = 7; chunk_size= end_chunk-start_chunk + 1;
-	out = repmat([start_chunk:end_chunk],30,1) +  repmat([0:10:290]',1,chunk_size); out = reshape(out',numel(out),1);
+	% end_chunk = 8; start_chunk = 7; chunk_size= end_chunk-start_chunk + 1;
+	% out = repmat([start_chunk:end_chunk],30,1) +  repmat([0:10:290]',1,chunk_size); out = reshape(out',numel(out),1);
+
+	
+	
+	end_chunk = 15; start_chunk = 11; chunk_size= end_chunk-start_chunk + 1;
+	out = repmat([start_chunk:end_chunk],30/2,1) +  repmat([0:2*10:290]',1,chunk_size); out = reshape(out',numel(out),1);
+
 
 	test_data.behavedata = [placdata(find([placdata.subjectnumber] ==n)).behavedata(out+2,:); dopadata(find([dopadata.subjectnumber] ==n)).behavedata(out+2,:)];
 
+	size(test_data)
 
 	[loglike, utildiff, logodds, probchoice_test] = model_param_RKN(result.b,test_data);
 	
