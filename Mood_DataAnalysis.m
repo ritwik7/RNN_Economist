@@ -192,12 +192,141 @@ T.Properties.VariableNames(1:7) = {'Subject_number','PT_loss','PT_pseudoR2','PT_
 writetable(T,'PT_loss_updated_50_split_combined_1sthalf.csv')
 
 
-################################
+% ################################
 
 load('PT_result.mat');
 T = array2table(result.probchoice);
 T.Properties.VariableNames(1) = {'probchoice_train'};
 writetable(T,'PT_probchoice.csv')
+% #############################
+
+
+
+
+
+
+
+%% For app data from GBE
+load GBEsuperplayers.mat;
+n_subjects = size(ritwikGBE,1)
+
+for n=1:n_subjects
+	for l = 1:length(ritwikGBE(n).data)
+
+
+
+			T = array2table((ritwikGBE(n).data{l}(:,1:10)));
+			T.Properties.VariableNames(1:10) = {'TrialNum','SideOfScreen','Safe','BigRisky','SmallRisky','SideChosen','Choice','Outcome','RT','Happiness'};
+			cd("C:\Users\rniyogi\Dropbox\Postdoc_UCL\DATA\rlab_incomplete_rewardSWB_code\by_RN\")
+			% dirpath = (strcat(['placdata\subject_num_',num2str(placdata(n).subjectnumber)]));
+
+
+			%% ###### OS ##-------
+			% cd('/Users/ritwik7/Dropbox (Personal)/Postdoc_UCL/DATA/rlab_incomplete_rewardSWB_code/by_RN')
+			dirpath = (strcat(['appdata/subject_num_',num2str(ritwikGBE(n).uid)]));
+
+
+			mkdir(dirpath);
+			cd(dirpath)
+			% writetable(T,'experiment_data.csv');
+			writetable(T,strcat(['app_data_num_play_',num2str(l),'.csv']));
+
+		end
+
+
+end
+
+
+PT_loss =  zeros(1,n_subjects); PT_pseudoR2= zeros(1,n_subjects); PT_accuracy = zeros(1,n_subjects);
+PT_loss_test =  zeros(1,n_subjects); PT_pseudoR2_test= zeros(1,n_subjects); PT_accuracy_test = zeros(1,n_subjects);
+
+for n=1:n_subjects
+
+	cd("C:\Users\rniyogi\Dropbox\Postdoc_UCL\DATA\rlab_incomplete_rewardSWB_code\by_RN\")
+		
+	dirpath = (strcat(['appdata/subject_num_',num2str(ritwikGBE(n).uid)]));
+%%%% --- COMNMENT OUT THIS LINE IF NECESSARY -----------
+	% dirpath	= strcat([dirpath,'/OddEvenPlays']);
+	dirpath	= strcat([dirpath,'/OddEvenPlays/RandomizedPlays10']);
+
+	% ###########################################
+
+	if exist(dirpath)	
+		dirpath
+		cd(dirpath)
+
+		train_data = readtable("train_data.csv");
+		train_data(:,1)=[];
+
+		result = modelfit_pt_RKN(table2array(train_data));
+
+		save PT_result_50_splits_combined_1sthalf result
+
+
+		load PT_result_50_splits_combined_1sthalf result
+
+
+
+		PT_loss(n) = - result.modelLL;
+		PT_pseudoR2(n) = result.pseudoR2;
+		PT_accuracy(n) = (sum((1-result.data(:,4)).*(1-result.probchoice)) + sum(result.data(:,4).*(result.probchoice)) ) / length(result.probchoice);
+
+		test_dat = readtable("test_data.csv");
+		test_dat(:,1)=[];	
+	 	
+	 	test_data.behavedata=table2array(test_dat);
+		[loglike, utildiff, logodds, probchoice_test] = model_param_RKN(result.b,test_data);
+		
+		
+
+
+		PT_pseudoR2_test(n) = 1 + (-(sum((1-test_data.behavedata(:,7)).*log(1-probchoice_test)) + sum(test_data.behavedata(:,7).*log(probchoice_test)) ) / length(probchoice_test))/log(0.5)
+
+
+		PT_loss_test(n) = loglike;
+
+
+
+
+		PT_accuracy_test(n) = (sum((1-test_data.behavedata(:,7)).*(1-probchoice_test)) + sum(test_data.behavedata(:,7).*(probchoice_test)) ) / length(probchoice_test) ;
+		% PT_accuracy_test(n-10) =(sum(probchoice_test(test_data.behavedata(:,7)==1)) + sum(1-probchoice_test(test_data.behavedata(:,7)==0)))/length(probchoice_test);
+
+
+		T = array2table(result.probchoice);
+		T.Properties.VariableNames(1) = {'probchoice_train'};
+
+		S = array2table(probchoice_test);
+		S.Properties.VariableNames(1) = {'probchoice_test'};
+
+		writetable(T,'PT_probchoice_50_split_combined_1sthalf.csv')
+		writetable(S,'PT_probchoice_test_50_split_combined_1sthalf.csv')
+
+end
+end
+
+
+
+T = array2table([[1:n_subjects]', PT_loss', PT_pseudoR2',PT_accuracy',PT_loss_test',PT_pseudoR2_test',PT_accuracy_test']);
+T.Properties.VariableNames(1:7) = {'Subject_number','PT_loss','PT_pseudoR2','PT_accuracy','PT_loss_test','PT_pseudoR2_test','PT_accuracy_test'};
+writetable(T,'PT_loss_updated_50_split_combined_1sthalf.csv')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

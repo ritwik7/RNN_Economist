@@ -1,3 +1,2 @@
-model_checkpoint_path: "Later_v2_DATA_RNN_LSTM_8features.ckpt"
+model_checkpoint_path: "Later_RNN_LSTM_8features.ckpt"
 all_model_checkpoint_paths: "Later_RNN_LSTM_8features.ckpt"
-all_model_checkpoint_paths: "Later_v2_DATA_RNN_LSTM_8features.ckpt"
