@@ -247,7 +247,7 @@ for n=1:n_subjects
 	dirpath = (strcat(['appdata/subject_num_',num2str(ritwikGBE(n).uid)]));
 %%%% --- COMNMENT OUT THIS LINE IF NECESSARY -----------
 	% dirpath	= strcat([dirpath,'/OddEvenPlays']);
-	dirpath	= strcat([dirpath,'/OddEvenPlays/RandomizedPlays10']);
+	dirpath	= strcat([dirpath,'/OddEvenPlays/RandomizedPlays1']);
 
 	% ###########################################
 
@@ -258,7 +258,10 @@ for n=1:n_subjects
 		train_data = readtable("train_data.csv");
 		train_data(:,1)=[];
 
-		result = modelfit_pt_RKN(table2array(train_data));
+		val_data = readtable("val_data.csv");
+		val_data(:,1)=[];
+		
+		result = modelfit_pt_RKN([table2array(train_data); table2array(val_data)]);
 
 		save PT_result_50_splits_combined_1sthalf result
 
