@@ -247,7 +247,8 @@ for n=1:n_subjects
 	dirpath = (strcat(['appdata/subject_num_',num2str(ritwikGBE(n).uid)]));
 %%%% --- COMNMENT OUT THIS LINE IF NECESSARY -----------
 	% dirpath	= strcat([dirpath,'/OddEvenPlays']);
-	dirpath	= strcat([dirpath,'/OddEvenPlays/RandomizedPlays1']);
+	% dirpath	= strcat([dirpath,'/OddEvenPlays/RandomizedPlays1']);
+	dirpath	= strcat([dirpath,'/Play_by_play']);
 
 	% ###########################################
 
@@ -257,11 +258,18 @@ for n=1:n_subjects
 
 		train_data = readtable("train_data.csv");
 		train_data(:,1)=[];
+		train_data = train_data(:,1:16);
 
-		val_data = readtable("val_data.csv");
-		val_data(:,1)=[];
-		
-		result = modelfit_pt_RKN([table2array(train_data); table2array(val_data)]);
+		if exist("val_data.csv")~=2
+			val_data = readtable("val_data.csv");
+			val_data(:,1)=[];
+
+			result = modelfit_pt_RKN([table2array(train_data); table2array(val_data)]);
+
+		else 
+
+			result = modelfit_pt_RKN([table2array(train_data)]);
+		end
 
 		save PT_result_50_splits_combined_1sthalf result
 
@@ -276,6 +284,7 @@ for n=1:n_subjects
 
 		test_dat = readtable("test_data.csv");
 		test_dat(:,1)=[];	
+		test_dat = test_dat(:,1:16);
 	 	
 	 	test_data.behavedata=table2array(test_dat);
 		[loglike, utildiff, logodds, probchoice_test] = model_param_RKN(result.b,test_data);
@@ -304,7 +313,7 @@ for n=1:n_subjects
 		writetable(T,'PT_probchoice_50_split_combined_1sthalf.csv')
 		writetable(S,'PT_probchoice_test_50_split_combined_1sthalf.csv')
 
-end
+	end
 end
 
 
