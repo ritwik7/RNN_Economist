@@ -288,9 +288,20 @@ for n=1:n_subjects
 	 	
 	 	test_data.behavedata=table2array(test_dat);
 		[loglike, utildiff, logodds, probchoice_test] = model_param_RKN(result.b,test_data);
-		
-		
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%%% generating fake choices with same options and params
+		test_dat.Choice = binornd(1,probchoice_test);
+		writetable(test_dat,'PT_generated_test_data.csv');
+
+		train_data_gen.behavedata = table2array(train_data);
+		[~,~,~,probchoice_train] = model_param_RKN(result.b,train_data_gen);
+
+		train_data.Choice  = binornd(1,probchoice_train);
+		writetable(train_data,'PT_generated_train_data.csv');
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 		PT_pseudoR2_test(n) = 1 + (-(sum((1-test_data.behavedata(:,7)).*log(1-probchoice_test)) + sum(test_data.behavedata(:,7).*log(probchoice_test)) ) / length(probchoice_test))/log(0.5)
 
