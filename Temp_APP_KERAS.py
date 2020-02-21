@@ -74,16 +74,16 @@ def add_releveant_features(task_df):
 
 
 
-    def add_kback_features(task_df):
+def add_kback_features(task_df):
 
-    for k in range(1,11):
-        task_df[str(k)+'backOutcome']=task_df['Outcome'].shift(k)
-        task_df[str(k)+'backChoice']=task_df['Choice'].shift(k)
-        task_df[str(k)+'backSafe']=task_df['Safe'].shift(k)
-        task_df[str(k)+'backBigRisky']=task_df['BigRisky'].shift(k)
-        task_df[str(k)+'backSmallRisky']=task_df['SmallRisky'].shift(k)
+	for k in range(1,11):
+	        task_df[str(k)+'backOutcome']=task_df['Outcome'].shift(k)
+	        task_df[str(k)+'backChoice']=task_df['Choice'].shift(k)
+	        task_df[str(k)+'backSafe']=task_df['Safe'].shift(k)
+	        task_df[str(k)+'backBigRisky']=task_df['BigRisky'].shift(k)
+	        task_df[str(k)+'backSmallRisky']=task_df['SmallRisky'].shift(k)
 
-    return task_df
+	return task_df
 
 
 
@@ -350,20 +350,20 @@ def data_split_train_test(train_data_df,test_data_df):
     test_X = test_X.reshape(-1,timesteps,inputs)
     
     ### Add half the episodes from test_X into train_X
-    train_X = np.concatenate((train_X, test_X[0:int(test_X.shape[0]/2),:,:]), axis=0)
-    test_X = test_X[int(test_X.shape[0]/2):,:,:]
-    print(train_X.shape)
-    print(test_X.shape)
+#     train_X = np.concatenate((train_X, test_X[0:int(test_X.shape[0]/2),:,:]), axis=0)
+#     test_X = test_X[int(test_X.shape[0]/2):,:,:]
+#     print(train_X.shape)
+#     print(test_X.shape)
     
     
     train_y = train_y.reshape(-1,timesteps,outputs)
     test_y = test_y.reshape(-1,timesteps,outputs)
     
-    ### Add half the episodes from test_y into train_y
-    train_y = np.concatenate((train_y, test_y[0:int(test_y.shape[0]/2),:,:]), axis=0)
-    test_y = test_y[int(test_y.shape[0]/2):,:,:]
-    print(train_y.shape)
-    print(test_y.shape)
+#     ### Add half the episodes from test_y into train_y
+#     train_y = np.concatenate((train_y, test_y[0:int(test_y.shape[0]/2),:,:]), axis=0)
+#     test_y = test_y[int(test_y.shape[0]/2):,:,:]
+#     print(train_y.shape)
+#     print(test_y.shape)
     
     return train_X, train_y, test_X, test_y
 
@@ -470,8 +470,17 @@ for num, subj_file_path in enumerate(subj_files_list[0:1]):
     train_data_df= pd.read_csv(Keras_file_path+"/PT_generated_train_data.csv")
     test_data_df = pd.read_csv(Keras_file_path+"/PT_generated_test_data.csv")
     
+#     train_data_df= pd.read_csv(Keras_file_path+"/train_data.csv")
+#     test_data_df = pd.read_csv(Keras_file_path+"/test_data.csv")
+    
+    print(train_data_df.shape[0]/29)
+    
+    
+    
     Keras_file_path = Keras_file_path + "/PT_generated"
     print(Keras_file_path)
+    
+    
 
 
 
