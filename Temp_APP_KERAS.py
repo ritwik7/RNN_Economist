@@ -440,7 +440,7 @@ hist_flag=0
 ####
 randomize_trials_flag = False
 
-for num, subj_file_path in enumerate(subj_files_list[0:1]):
+for num, subj_file_path in enumerate(subj_files_list[1:]):
 
 #
 # for num, subj_file_path in enumerate([subj_files_list[0]]):
@@ -478,6 +478,7 @@ for num, subj_file_path in enumerate(subj_files_list[0:1]):
     
     
     Keras_file_path = Keras_file_path + "/PT_generated"
+    os.mkdir(Keras_file_path)
     print(Keras_file_path)
     
     
