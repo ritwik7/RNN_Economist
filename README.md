@@ -1,3 +1,1 @@
-# RNN_Economist
-# RNN_Economist_updated
-# RNN_Economist
+# RNN_Economist: AI driven discovery and development of behavioural economic models
